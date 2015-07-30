@@ -9,26 +9,52 @@ namespace Blueprint
 {
     class Program
     {
+        public static string BlueprintAction = "manufacture";
+        public static string SourceFolder = "O:\\_temp\\blueprint-test";
+        public static string DestinationFolder = "O:\\_temp\\blueprint-test\\www\\";
+
         static void Main(string[] args)
         {
-            string[] arguments = {"manufacture", "O:\\_temp\\blueprint-test", "O:\\_temp\\blueprint-test\\www\\"};
 
-            if (Directory.Exists(arguments[1]))
+            // check which arguments are present
+            foreach (string argument in args)
             {
-                Console.WriteLine("checking " + arguments[1]);
+                int index = Array.IndexOf(args, argument);
 
-                // check if www folder exists
-                if (!Directory.Exists(arguments[2]))
+                // assign arguments to properties
+                if (index == 0)
                 {
-                    // create www folder
-                    Directory.CreateDirectory(arguments[2]);
+                    BlueprintAction = argument;
+                } 
+                else if (index == 1 && index != (args.Length - 1))
+                {
+                    SourceFolder = argument;
                 }
-
-                // This path is a directory
-                ProcessDirectory(arguments[1], arguments[2]);
-                Console.ReadLine();
+                else if (index == 1 && index == (args.Length - 1))
+                {
+                    DestinationFolder = argument;
+                }
+                else if (index == 2)
+                {
+                    DestinationFolder = argument;
+                }
             }
 
+            // check if destination folder exists
+            if (DestinationFolder != "" && !Directory.Exists(DestinationFolder))
+            {
+                Directory.CreateDirectory(args[2]);
+            }
+
+            // check if source folder exists
+            if (Directory.Exists(SourceFolder))
+            {
+                // start processing directies/files
+                ProcessDirectory(SourceFolder, DestinationFolder);
+            }
+
+            Console.WriteLine("Process completed, press a key to exit");
+            Console.ReadLine();
         }
 
         public static void ProcessDirectory(string readDirectory, string writeDirectory)
@@ -46,18 +72,12 @@ namespace Blueprint
 
         public static void ProcessFile(string path, string writeDirectory)
         {
-            string[] file = path.Split('\\');
-            string fileName = file[file.Length - 1].Split('.')[0];
-            string fileExtension = "." + file[file.Length - 1].Split('.')[1];
+            SourceFile file = new SourceFile(path);
 
             // convert markdown file to HTML
-            if (fileExtension == ".md")
+            if (file.FileType == ".md")
             {
-                using (var reader = new StreamReader(path))
-                using (var writer = new StreamWriter(writeDirectory + fileName + ".html"))
-                {
-                    CommonMark.CommonMarkConverter.Convert(reader, writer);
-                }
+                file.ConvertFileToHTML(path, writeDirectory + file.FileName + ".html");
             }
         }
     }
