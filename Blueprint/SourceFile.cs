@@ -30,5 +30,23 @@ namespace Blueprint
                 CommonMark.CommonMarkConverter.Convert(reader, writer);
             }
         }
+
+        public string CreateDirectoryStructure(string filename)
+        {
+            string path = "O:\\_temp\\blueprint-test\\_www\\";
+
+            // by creation date
+            string[] date = filename.Split('-');
+            path += date[0] + "\\" + date[1] + "\\" + date[2] + "\\";
+
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            // return path so file has reference
+            return path;
+        }
     }
 }

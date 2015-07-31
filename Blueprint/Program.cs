@@ -11,7 +11,7 @@ namespace Blueprint
     {
         public static string BlueprintAction = "manufacture";
         public static string SourceFolder = "O:\\_temp\\blueprint-test";
-        public static string DestinationFolder = "O:\\_temp\\blueprint-test\\www\\";
+        public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
 
         static void Main(string[] args)
         {

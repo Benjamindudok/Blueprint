@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Blueprint
 {
     class SourceBrowser
     {
-        public SourceBrowser()
-        {
-            
-        }
 
         public static void ProcessDirectory(string source, string destination)
         {
@@ -24,17 +21,32 @@ namespace Blueprint
             // Recurse into subdirectories of this directory. 
             string[] subdirectoryEntries = Directory.GetDirectories(source);
             foreach (string subdirectory in subdirectoryEntries)
-                ProcessDirectory(subdirectory, destination);
+            {
+                // only check certain directories
+                Regex regex = new Regex(@"_posts");
+                Match match = regex.Match(subdirectory);
+
+                if (match.Success)
+                    ProcessDirectory(subdirectory, destination);
+            }
+               
         }
 
         public static void ProcessFile(string path, string writeDirectory)
         {
             SourceFile file = new SourceFile(path);
+            string destination = "";
 
             // convert markdown file to HTML
             if (file.FileType == ".md")
             {
-                file.ConvertFileToHTML(path, writeDirectory + file.FileName + ".html");
+                Regex regex = new Regex(@"_posts");
+                Match match = regex.Match(file.SourcePath);
+
+                if (match.Success)
+                    destination = file.CreateDirectoryStructure(file.FileName);
+
+                file.ConvertFileToHTML(path, destination + file.FileName + ".html");
             }
 
         }
