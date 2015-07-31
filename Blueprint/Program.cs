@@ -43,42 +43,18 @@ namespace Blueprint
             // check if destination folder exists
             if (DestinationFolder != "" && !Directory.Exists(DestinationFolder))
             {
-                Directory.CreateDirectory(args[2]);
+                Directory.CreateDirectory(DestinationFolder);
             }
 
             // check if source folder exists
             if (Directory.Exists(SourceFolder))
             {
                 // start processing directies/files
-                ProcessDirectory(SourceFolder, DestinationFolder);
+                SourceBrowser.ProcessDirectory(SourceFolder, DestinationFolder);
             }
 
             Console.WriteLine("Process completed, press a key to exit");
             Console.ReadLine();
-        }
-
-        public static void ProcessDirectory(string readDirectory, string writeDirectory)
-        {
-            // Process the list of files found in the directory. 
-            string[] fileEntries = Directory.GetFiles(readDirectory);
-            foreach (string fileName in fileEntries)
-                ProcessFile(fileName, writeDirectory);
-
-            // Recurse into subdirectories of this directory. 
-            string[] subdirectoryEntries = Directory.GetDirectories(readDirectory);
-            foreach (string subdirectory in subdirectoryEntries)
-                ProcessDirectory(subdirectory, writeDirectory);
-        }
-
-        public static void ProcessFile(string path, string writeDirectory)
-        {
-            SourceFile file = new SourceFile(path);
-
-            // convert markdown file to HTML
-            if (file.FileType == ".md")
-            {
-                file.ConvertFileToHTML(path, writeDirectory + file.FileName + ".html");
-            }
         }
     }
 }
