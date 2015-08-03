@@ -4,17 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Blueprint
 {
-    class Program
+    public class Program
     {
+        public static Config Config;
         public static string BlueprintAction = "manufacture";
         public static string SourceFolder = "O:\\_temp\\blueprint-test";
         public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
 
         static void Main(string[] args)
         {
+            // Load config from json
+            Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
 
             // check which arguments are present
             foreach (string argument in args)
