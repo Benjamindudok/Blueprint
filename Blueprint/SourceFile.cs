@@ -24,11 +24,26 @@ namespace Blueprint
 
         public void ConvertFileToHTML(string source, string destination)
         {
+            // convert markdown to html
             using (var reader = new StreamReader(source))
             using (var writer = new StreamWriter(destination))
             {
                 CommonMark.CommonMarkConverter.Convert(reader, writer);
             }
+
+            // add layout to html file
+            string header   = File.ReadAllText("O:\\_temp\\blueprint-test\\_layout\\header.html");
+            string content  = File.ReadAllText(destination);
+            string footer   = File.ReadAllText("O:\\_temp\\blueprint-test\\_layout\\footer.html");
+
+            // delete 'old' generated html file
+            if (File.Exists(destination))
+            {
+                File.Delete(destination);
+            }
+
+            // add new html file with layout
+            File.WriteAllText(destination, header + content + footer);
         }
 
         public string CreateDirectoryStructure(string filename)
@@ -48,5 +63,7 @@ namespace Blueprint
             // return path so file has reference
             return path;
         }
+
+        
     }
 }

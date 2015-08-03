@@ -13,7 +13,6 @@ namespace Blueprint
         public bool Debug { get; set; }
         public string Source { get; set; }
         public string Destination { get; set; }
-        public string[] Exclude { get; set; }
         public string[] Include { get; set; }
     }
 }
