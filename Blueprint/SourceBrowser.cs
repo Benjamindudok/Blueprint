@@ -24,19 +24,23 @@ namespace Blueprint
             string[] subdirectoryEntries = Directory.GetDirectories(source);
             foreach (string subdirectory in subdirectoryEntries)
             {
+                string subdirectoryName = subdirectory.Split('\\').Last();
+
                 // get list of folders to browse
-                string subfolders = "_posts";
+                string sourceFolders = "_posts";
                 foreach (string include in Program.Config.Include)
-                    subfolders += "|" + include;
+                    sourceFolders += "|" + include;
 
                 // only check certain directories
-                Regex regex = new Regex(@"(" + subfolders + ")");
+                Regex regex = new Regex(@"(" + sourceFolders + ")");
                 Match match = regex.Match(subdirectory);
+
 
                 if (match.Success)
                     ProcessDirectory(subdirectory, destination);
-            }
-               
+                else if (subdirectoryName[0].ToString() != "_")
+                    CopyDirectory(subdirectory, destination + "scripts");
+            }   
         }
 
         public static void ProcessFile(string path, string writeDirectory)
@@ -59,7 +63,22 @@ namespace Blueprint
                     destination + file.FileName + ".html"
                 );
             }
+        }
 
+        public static void CopyDirectory(string SourcePath, string DestinationPath)
+        {
+            if (!Directory.Exists(DestinationPath))
+                Directory.CreateDirectory(DestinationPath);
+
+            //Now Create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(SourcePath, "*", 
+                SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(SourcePath, DestinationPath));
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(SourcePath, "*.*", 
+                SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
         }
     }
 }
