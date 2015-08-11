@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Nustache.Core;
 
 namespace Blueprint
 {
@@ -24,6 +25,10 @@ namespace Blueprint
 
         public void ConvertFileToHTML(string source, string destination)
         {
+            // test data
+            IDictionary<string, string> exampleData = new Dictionary<string, string>();
+            exampleData.Add("test", "Dit is een test variable geplaatst door Nustache");
+
             // convert markdown to html
             using (var reader = new StreamReader(source))
             using (var writer = new StreamWriter(destination))
@@ -33,7 +38,7 @@ namespace Blueprint
 
             // add layout to html file
             string header   = File.ReadAllText("O:\\_temp\\blueprint-test\\_layout\\header.html");
-            string content  = File.ReadAllText(destination);
+            string content = Render.FileToString(destination, exampleData);
             string footer   = File.ReadAllText("O:\\_temp\\blueprint-test\\_layout\\footer.html");
 
             // delete 'old' generated html file
