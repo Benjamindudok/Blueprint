@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blueprint.Models;
 using Newtonsoft.Json;
 
 namespace Blueprint
 {
     public class Program
     {
-        public static Config Config;
+        public static Config Variable;
         public static string BlueprintAction = "manufacture";
         public static string SourceFolder = "O:\\_temp\\blueprint-test";
         public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
@@ -18,7 +19,8 @@ namespace Blueprint
         static void Main(string[] args)
         {
             // Load config from json
-            Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
+            Variable = new Config();
+            Variable = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
 
             // check which arguments are present
             foreach (string argument in args)
@@ -55,9 +57,14 @@ namespace Blueprint
             {
                 // start processing directies/files
                 SourceBrowser.ProcessDirectory(SourceFolder, DestinationFolder);
+
+                Console.WriteLine("Process completed, press a key to exit");
+            } else
+            {
+                Console.WriteLine("Source folder does not exist.");
+                Console.WriteLine("Please specify the correct source folder.");
             }
 
-            Console.WriteLine("Process completed, press a key to exit");
             Console.ReadLine();
         }
     }

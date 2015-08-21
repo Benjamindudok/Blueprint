@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blueprint.Models;
 using Nustache.Core;
 
 namespace Blueprint
@@ -27,8 +28,8 @@ namespace Blueprint
         {
             // test data
             IDictionary<string, string> exampleData = new Dictionary<string, string>();
-            exampleData.Add("test", "Dit is een test variable geplaatst door Nustache");
-
+            exampleData.Add("test", "Dit is een test variabel geplaatst door Nustache");
+       
             // convert markdown to html
             using (var reader = new StreamReader(source))
             using (var writer = new StreamWriter(destination))

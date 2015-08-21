@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Blueprint.Models;
 
 namespace Blueprint
 {
@@ -28,7 +29,7 @@ namespace Blueprint
 
                 // get list of folders to browse
                 string sourceFolders = "_posts";
-                foreach (string include in Program.Config.Include)
+                foreach (string include in Program.Variable.Include)
                     sourceFolders += "|" + include;
 
                 // only check certain directories
@@ -55,8 +56,14 @@ namespace Blueprint
                 Regex regex = new Regex(@"_posts");
                 Match match = regex.Match(file.SourcePath);
 
-                if (match.Success)
+                // if file is a post
+                if (match.Success) {
                     destination = file.CreateDirectoryStructure(file.FileName);
+
+                    // store post in variable
+                    Post post = new Post(path);
+                    Program.Variable.Posts.Add(post);
+                }
 
                 file.ConvertFileToHTML(
                     path, 

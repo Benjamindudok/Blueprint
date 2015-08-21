@@ -51,9 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="SourceBrowser.cs" />
-    <Compile Include="SourceFile.cs" />
+    <Compile Include="Models\Config.cs" />
+    <Compile Include="Components\SourceBrowser.cs" />
+    <Compile Include="Components\SourceFile.cs" />
+    <Compile Include="Models\Post.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
