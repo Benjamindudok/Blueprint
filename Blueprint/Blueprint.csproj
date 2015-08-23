@@ -54,6 +54,7 @@
     <Compile Include="Models\Config.cs" />
     <Compile Include="Components\SourceBrowser.cs" />
     <Compile Include="Components\SourceFile.cs" />
+    <Compile Include="Models\Page.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

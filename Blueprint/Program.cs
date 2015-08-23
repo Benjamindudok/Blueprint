@@ -13,8 +13,8 @@ namespace Blueprint
     {
         public static Config Variable;
         public static string BlueprintAction = "manufacture";
-        public static string SourceFolder = "O:\\_temp\\blueprint-test";
-        public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
+        public static string SourceFolder = "D:\\Projects\\www\\blueprint-test";
+        public static string DestinationFolder = "D:\\Projects\\www\\blueprint-test\\_www\\";
 
         static void Main(string[] args)
         {
@@ -55,8 +55,23 @@ namespace Blueprint
             // check if source folder exists
             if (Directory.Exists(SourceFolder))
             {
+                // start analyzing directies/files
+                SourceBrowser.AnalyzeDirectory(SourceFolder);
+
+                Console.WriteLine("Currently stored posts");
+                foreach (Post post in Variable.Posts)
+                {
+                    Console.WriteLine(post.Title);
+                }
+
+                Console.WriteLine("Currently stored pages");
+                foreach (Page page in Variable.Pages)
+                {
+                    Console.WriteLine(page.Title);
+                }
+
                 // start processing directies/files
-                SourceBrowser.ProcessDirectory(SourceFolder, DestinationFolder);
+                SourceBrowser.ProcessDirectory(SourceFolder);
 
                 Console.WriteLine("Process completed, press a key to exit");
             } else

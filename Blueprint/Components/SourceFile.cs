@@ -26,9 +26,6 @@ namespace Blueprint
 
         public void ConvertFileToHTML(string source, string destination)
         {
-            // test data
-            IDictionary<string, string> exampleData = new Dictionary<string, string>();
-            exampleData.Add("test", "Dit is een test variabel geplaatst door Nustache");
        
             // convert markdown to html
             using (var reader = new StreamReader(source))
@@ -38,9 +35,9 @@ namespace Blueprint
             }
 
             // add layout to html file
-            string header   = File.ReadAllText("O:\\_temp\\blueprint-test\\_layout\\header.html");
-            string content = Render.FileToString(destination, exampleData);
-            string footer   = File.ReadAllText("O:\\_temp\\blueprint-test\\_layout\\footer.html");
+            string header   = File.ReadAllText( Program.SourceFolder + "\\_layout\\header.html");
+            string content = Render.FileToString(destination, Program.Variable);
+            string footer   = File.ReadAllText( Program.SourceFolder + "\\_layout\\footer.html");
 
             // delete 'old' generated html file
             if (File.Exists(destination))
@@ -54,7 +51,7 @@ namespace Blueprint
 
         public string CreateDirectoryStructure(string filename)
         {
-            string path = "O:\\_temp\\blueprint-test\\_www\\";
+            string path = Program.DestinationFolder;
 
             // by creation date
             string[] date = filename.Split('-');
@@ -69,7 +66,5 @@ namespace Blueprint
             // return path so file has reference
             return path;
         }
-
-        
     }
 }

@@ -17,12 +17,14 @@ namespace Blueprint
         public string[] Include { get; set; }
 
         public List<Post> Posts { get; set; }
+        public List<Page> Pages { get; set; }
 
         public DateTime Time = DateTime.Now;
 
         public Config()
         {
             Posts = new List<Post>();
+            Pages = new List<Page>();
         }
     }
 }
