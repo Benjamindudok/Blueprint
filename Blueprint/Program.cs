@@ -12,39 +12,57 @@ namespace Blueprint
     public class Program
     {
         public static Config Config;
-        public static string BlueprintAction = "manufacture";
-        public static string SourceFolder = "O:\\_temp\\blueprint-test";
-        public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
+        public static string BlueprintAction;
+        public static string SourceFolder;
+        public static string DestinationFolder;
 
         static void Main(string[] args)
         {
+            // use relative path in release builds if no arguments given.
+            #if (DEBUG)
+                const string relativePath = "O:\\_temp\\blueprint-test";
+            #else
+                string relativePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                relativePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            #endif
+
+            if (args.Length < 1)
+            {
+                // set overrides for debug mode or defaults
+                BlueprintAction = "manufacture";
+                SourceFolder = relativePath;
+                DestinationFolder = relativePath + "\\_www\\";
+            } 
+            else
+            {
+                // check which arguments are present
+                foreach (string argument in args)
+                {
+                    int index = Array.IndexOf(args, argument);
+
+                    // assign arguments to properties
+                    if (index == 0)
+                    {
+                        BlueprintAction = argument;
+                    }
+                    else if (index == 1 && index != (args.Length - 1))
+                    {
+                        SourceFolder = argument;
+                    }
+                    else if (index == 1 && index == (args.Length - 1))
+                    {
+                        DestinationFolder = argument;
+                    }
+                    else if (index == 2)
+                    {
+                        DestinationFolder = argument;
+                    }
+                }
+            }
+
             // Load config from json
             Config = new Config();
             Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
-
-            // check which arguments are present
-            foreach (string argument in args)
-            {
-                int index = Array.IndexOf(args, argument);
-
-                // assign arguments to properties
-                if (index == 0)
-                {
-                    BlueprintAction = argument;
-                } 
-                else if (index == 1 && index != (args.Length - 1))
-                {
-                    SourceFolder = argument;
-                }
-                else if (index == 1 && index == (args.Length - 1))
-                {
-                    DestinationFolder = argument;
-                }
-                else if (index == 2)
-                {
-                    DestinationFolder = argument;
-                }
-            }
 
             // check if destination folder exists
             if (DestinationFolder != "" && !Directory.Exists(DestinationFolder))
@@ -57,18 +75,6 @@ namespace Blueprint
             {
                 // start analyzing directies/files
                 SourceBrowser.AnalyzeDirectory(SourceFolder);
-
-                Console.WriteLine("Currently stored posts");
-                foreach (Post post in Config.Variables.Site.Posts)
-                {
-                    Console.WriteLine(post.Title);
-                }
-
-                Console.WriteLine("Currently stored pages");
-                foreach (Page page in Config.Variables.Site.Pages)
-                {
-                    Console.WriteLine(page.Title);
-                }
 
                 // start processing directies/files
                 SourceBrowser.ProcessDirectory(SourceFolder);
