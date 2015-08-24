@@ -36,7 +36,7 @@ namespace Blueprint
 
             // add layout to html file
             string header   = File.ReadAllText( Program.SourceFolder + "\\_layout\\header.html");
-            string content = Render.FileToString(destination, Program.Variables);
+            string content = Render.FileToString(destination, Program.Config.Variables);
             string footer   = File.ReadAllText( Program.SourceFolder + "\\_layout\\footer.html");
 
             // delete 'old' generated html file

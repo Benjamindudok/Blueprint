@@ -26,7 +26,7 @@ namespace Blueprint
                 string subdirectoryName = subdirectory.Split('\\').Last();
 
                 // get list of folders to browse
-                foreach (string include in Program.Variables.Include)
+                foreach (string include in Program.Config.Include)
                     sourceFolders += "|" + include;
 
                 // only check right directories
@@ -57,13 +57,13 @@ namespace Blueprint
                 {
                     // store post in variable
                     Post post = new Post(path);
-                    Program.Variables.Posts.Add(post);
+                    Program.Config.Variables.Site.Posts.Add(post);
                 }
                 else
                 {
                     // store page in variable
                     Page page = new Page(path);
-                    Program.Variables.Pages.Add(page);
+                    Program.Config.Variables.Site.Pages.Add(page);
                 }
             }
         }

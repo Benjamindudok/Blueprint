@@ -11,7 +11,7 @@ namespace Blueprint
 {
     public class Program
     {
-        public static Config Variables;
+        public static Config Config;
         public static string BlueprintAction = "manufacture";
         public static string SourceFolder = "O:\\_temp\\blueprint-test";
         public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
@@ -19,8 +19,8 @@ namespace Blueprint
         static void Main(string[] args)
         {
             // Load config from json
-            Variables = new Config();
-            Variables = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
+            Config = new Config();
+            Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
 
             // check which arguments are present
             foreach (string argument in args)
@@ -59,13 +59,13 @@ namespace Blueprint
                 SourceBrowser.AnalyzeDirectory(SourceFolder);
 
                 Console.WriteLine("Currently stored posts");
-                foreach (Post post in Variables.Posts)
+                foreach (Post post in Config.Variables.Site.Posts)
                 {
                     Console.WriteLine(post.Title);
                 }
 
                 Console.WriteLine("Currently stored pages");
-                foreach (Page page in Variables.Pages)
+                foreach (Page page in Config.Variables.Site.Pages)
                 {
                     Console.WriteLine(page.Title);
                 }
