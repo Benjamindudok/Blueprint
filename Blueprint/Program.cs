@@ -11,16 +11,16 @@ namespace Blueprint
 {
     public class Program
     {
-        public static Config Variable;
+        public static Config Variables;
         public static string BlueprintAction = "manufacture";
-        public static string SourceFolder = "D:\\Projects\\www\\blueprint-test";
-        public static string DestinationFolder = "D:\\Projects\\www\\blueprint-test\\_www\\";
+        public static string SourceFolder = "O:\\_temp\\blueprint-test";
+        public static string DestinationFolder = "O:\\_temp\\blueprint-test\\_www\\";
 
         static void Main(string[] args)
         {
             // Load config from json
-            Variable = new Config();
-            Variable = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
+            Variables = new Config();
+            Variables = JsonConvert.DeserializeObject<Config>(File.ReadAllText(SourceFolder + "\\_config\\config.json"));
 
             // check which arguments are present
             foreach (string argument in args)
@@ -59,13 +59,13 @@ namespace Blueprint
                 SourceBrowser.AnalyzeDirectory(SourceFolder);
 
                 Console.WriteLine("Currently stored posts");
-                foreach (Post post in Variable.Posts)
+                foreach (Post post in Variables.Posts)
                 {
                     Console.WriteLine(post.Title);
                 }
 
                 Console.WriteLine("Currently stored pages");
-                foreach (Page page in Variable.Pages)
+                foreach (Page page in Variables.Pages)
                 {
                     Console.WriteLine(page.Title);
                 }

@@ -15,8 +15,6 @@ namespace Blueprint
 
         public static void AnalyzeDirectory(string source)
         {
-            string folderName = source.Split('\\').Last();
-
             // Process the list of files found in the directory. 
             string[] fileEntries = Directory.GetFiles(source);
             foreach (string fileName in fileEntries)
@@ -28,7 +26,7 @@ namespace Blueprint
                 string subdirectoryName = subdirectory.Split('\\').Last();
 
                 // get list of folders to browse
-                foreach (string include in Program.Variable.Include)
+                foreach (string include in Program.Variables.Include)
                     sourceFolders += "|" + include;
 
                 // only check right directories
@@ -46,7 +44,6 @@ namespace Blueprint
         public static void AnalyzeFile(string path)
         {
             SourceFile file = new SourceFile(path);
-            string destination = Program.DestinationFolder;
 
             // convert markdown file to HTML
             if (file.FileType == ".md")
@@ -58,25 +55,21 @@ namespace Blueprint
                 // if file is a post
                 if (match.Success)
                 {
-                    destination = file.CreateDirectoryStructure(file.FileName);
-
                     // store post in variable
                     Post post = new Post(path);
-                    Program.Variable.Posts.Add(post);
+                    Program.Variables.Posts.Add(post);
                 }
                 else
                 {
                     // store page in variable
                     Page page = new Page(path);
-                    Program.Variable.Pages.Add(page);
+                    Program.Variables.Pages.Add(page);
                 }
             }
         }
 
         public static void ProcessDirectory(string source)
         {
-            string folderName = source.Split('\\').Last();
-
             // Process the list of files found in the directory. 
             string[] fileEntries = Directory.GetFiles(source);
             foreach (string fileName in fileEntries)
