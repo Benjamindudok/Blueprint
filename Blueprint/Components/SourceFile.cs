@@ -34,10 +34,10 @@ namespace Blueprint
                 CommonMark.CommonMarkConverter.Convert(reader, writer);
             }
 
-            // add layout to html file
-            string header   = File.ReadAllText( Program.SourceFolder + "\\_layout\\header.html");
-            string content = Render.FileToString(destination, Program.Config.Variables);
-            string footer   = File.ReadAllText( Program.SourceFolder + "\\_layout\\footer.html");
+            // add layout to html file and let Nustache do it's work
+            string header   = Render.FileToString(Program.SourceFolder + "\\_layout\\header.html", Program.Config.Variables);
+            string content  = Render.FileToString(destination, Program.Config.Variables);
+            string footer   = Render.FileToString(Program.SourceFolder + "\\_layout\\footer.html", Program.Config.Variables);
 
             // delete 'old' generated html file
             if (File.Exists(destination))
