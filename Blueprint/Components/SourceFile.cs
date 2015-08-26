@@ -14,6 +14,7 @@ namespace Blueprint
         public string FileName { get; set; }
         public string FileType { get; set; }
         public string SourcePath { get; set; }
+        public string DestinationPath { get; set; }
         public string Content { get; set; }
         public string Type { get; set; }
 
@@ -24,6 +25,7 @@ namespace Blueprint
             FileName = file[file.Length - 1].Split('.')[0];
             FileType = "." + file[file.Length - 1].Split('.')[1];
             SourcePath = path;
+            DestinationPath = Program.DestinationFolder + path.Replace(Program.SourceFolder, "").Replace(FileName + FileType, "");
         }
 
         public string ConvertMarkdown(string source)
@@ -52,7 +54,7 @@ namespace Blueprint
             Nustache.Core.Render.StringToFile(content, Program.Config.Variables, destination);
         }
 
-        public string CreateDirectoryStructure(string filename)
+        public string GetDirectoryStructureForPosts(string filename)
         {
             string path = Program.DestinationFolder;
 

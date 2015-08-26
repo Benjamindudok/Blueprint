@@ -21,6 +21,7 @@ namespace Blueprint.Models
             // populate class attributes
             Title = Regex.Replace(getFileName(fileName), @"^\s+", "");
             Url = "/" + fileName[0] + "/" + fileName[1] + "/" + fileName[2] + "/" + Title.Replace(" ", "-").ToLower() + ".html";
+
         }
 
         private string getFileName(string file)
@@ -29,6 +30,7 @@ namespace Blueprint.Models
 
             sb.Replace("-", " ");
             sb.Replace(".md", "");
+            sb.Replace(".html", "");
 
             return sb.ToString();
         }
