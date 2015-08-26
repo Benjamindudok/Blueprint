@@ -15,10 +15,13 @@ namespace Blueprint
         public string[] Include { get; set; }
         public string[] Exclude { get; set; }
 
+        public List<SourceFile> Files { get; set; }
+
         public Variables Variables { get; set; }
 
         public Config()
         {
+            Files = new List<SourceFile>();
             Variables = new Variables();
         }
     }

@@ -9,11 +9,11 @@ using Blueprint.Models;
 
 namespace Blueprint
 {
-    abstract class SourceBrowser
+    class SourceBrowser
     {
         public static string SourceFolders = "_posts";
 
-        protected SourceBrowser()
+        public SourceBrowser()
         {
             // get list of folders to browse
             foreach (string include in Program.Config.Include)
@@ -49,7 +49,42 @@ namespace Blueprint
             }
         }
 
-        public abstract void ProcessFile(string path);
+        public void ProcessFile(string path)
+        {
+            SourceFile file = new SourceFile(path);
+            
+            Regex regex = new Regex(@"_posts");
+            Match postsMatch = regex.Match(file.SourcePath);
+
+            // Check if file is a page or post
+            if (postsMatch.Success)
+            {
+                // store post in variable
+                Post post = new Post(path);
+                Program.Config.Variables.Site.Posts.Add(post);
+
+                file.Type = "post";
+                // create directory structure
+                //file.CreateDirectoryStructure(file.FileName);
+            } 
+            else
+            {
+                // store page in variable
+                Page page = new Page(path);
+                Program.Config.Variables.Site.Pages.Add(page);
+
+                file.Type = "page";
+            }
+
+            if (file.FileType == ".md")
+                file.Content = file.ConvertMarkdown(path);
+
+            else if (file.FileType == ".html")
+                file.Content = File.ReadAllText(path);
+
+            // add file to memory
+            Program.Config.Files.Add(file);
+        }
 
         public void CopyDirectory(string SourcePath, string DestinationPath)
         {
@@ -67,67 +102,5 @@ namespace Blueprint
                 File.Copy(newPath, newPath.Replace(SourcePath, DestinationPath), true);
         }
     }
-
-    class AnalyzeBrowser : SourceBrowser
-    {
-        public override void ProcessFile(string path)
-        {
-            SourceFile file = new SourceFile(path);
-
-            // convert markdown file to HTML
-            if (file.FileType == ".md" || file.FileType == ".html")
-            {
-                // if file is in '_posts' folder, alter writeDirectory
-                Regex regex = new Regex(@"_posts");
-                Match postMatch = regex.Match(file.SourcePath);
-
-                // if file is a post
-                if (postMatch.Success)
-                {
-                    // store post in variable
-                    Post post = new Post(path);
-                    Program.Config.Variables.Site.Posts.Add(post);
-                }
-                else
-                {
-                    // store page in variable
-                    Page page = new Page(path);
-                    Program.Config.Variables.Site.Pages.Add(page);
-                }
-            }
-        }
-    }
-
-    class ProcessBrowser : SourceBrowser
-    {
-        public override void ProcessFile(string path)
-        {
-            SourceFile file = new SourceFile(path);
-            string destination = Program.DestinationFolder;
-
-            Console.WriteLine(file.FileName + file.FileType);
-
-            // convert markdown file to HTML
-            if (file.FileType == ".md")
-            {
-                // if file is in '_posts' folder, alter writeDirectory
-                Regex regex = new Regex(@"_posts");
-                Match postMatch = regex.Match(file.SourcePath);
-
-                // if file is a post
-                if (postMatch.Success)
-                {
-                    destination = file.CreateDirectoryStructure(file.FileName);
-                }
-
-                file.ConvertFileToHTML(
-                    path, destination + file.FileName + ".html");
-            } 
-            else if (file.FileType == ".html")
-            {
-                file.CopyFileToDestination(
-                    path, destination + file.FileName + ".html");
-            }
-        }
-    }
+   
 }

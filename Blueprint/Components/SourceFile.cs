@@ -9,11 +9,13 @@ using Nustache.Core;
 
 namespace Blueprint
 {
-    class SourceFile
+    public class SourceFile
     {
         public string FileName { get; set; }
         public string FileType { get; set; }
         public string SourcePath { get; set; }
+        public string Content { get; set; }
+        public string Type { get; set; }
 
         public SourceFile(string path)
         {
@@ -24,35 +26,30 @@ namespace Blueprint
             SourcePath = path;
         }
 
-        public void ConvertFileToHTML(string source, string destination)
+        public string ConvertMarkdown(string source)
         {
-       
-            // convert markdown to html
-            using (var reader = new StreamReader(source))
-            using (var writer = new StreamWriter(destination))
-            {
-                CommonMark.CommonMarkConverter.Convert(reader, writer);
-            }
+            // read file
+            string file = File.ReadAllText(source);
 
-            // add layout to html file and let Nustache do it's work
-            string header   = Render.FileToString(Program.SourceFolder + "\\_layout\\header.html", Program.Config.Variables);
-            string content  = Render.FileToString(destination, Program.Config.Variables);
-            string footer   = Render.FileToString(Program.SourceFolder + "\\_layout\\footer.html", Program.Config.Variables);
-
-            // delete 'old' generated html file
-            if (File.Exists(destination))
-            {
-                File.Delete(destination);
-            }
-
-            // add new html file with layout
-            File.WriteAllText(destination, header + content + footer);
+            // convert markdown to html string
+            return CommonMark.CommonMarkConverter.Convert(file);
         }
 
-        public void CopyFileToDestination(string source, string destination)
+        public void Render(string content, string destination, bool renderLayout)
         {
-            string sourceFile = Render.FileToString(source, Program.Config.Variables);
-            File.WriteAllText(destination, sourceFile);
+            // add header / footer to content
+            // TODO make layout files variable by config
+            if (renderLayout) {
+                string header   = File.ReadAllText(Program.SourceFolder + "\\_layout\\header.html");
+                string footer = File.ReadAllText(Program.SourceFolder + "\\_layout\\footer.html");
+
+                content = header + content + footer;
+            }
+
+            // TODO add Nustache Partials to content
+
+            // render html file with replaced variables
+            Nustache.Core.Render.StringToFile(content, Program.Config.Variables, destination);
         }
 
         public string CreateDirectoryStructure(string filename)
@@ -69,7 +66,7 @@ namespace Blueprint
                 Directory.CreateDirectory(path);
             }
 
-            // return path so file has reference
+            // return path for reference
             return path;
         }
     }

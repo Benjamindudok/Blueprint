@@ -26,6 +26,7 @@ namespace Blueprint
                 relativePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             #endif
 
+            // check program arguments
             if (args.Length < 1)
             {
                 // set overrides for debug mode or defaults
@@ -73,13 +74,26 @@ namespace Blueprint
             // check if source folder exists
             if (Directory.Exists(SourceFolder))
             {
-                // start analyzing directies/files
-                SourceBrowser analyzer = new AnalyzeBrowser();
-                analyzer.ProcessDirectory(SourceFolder);
-
                 // start processing directies/files
-                SourceBrowser processer = new ProcessBrowser();
-                processer.ProcessDirectory(SourceFolder);
+                SourceBrowser processor = new SourceBrowser();
+                processor.ProcessDirectory(SourceFolder);
+
+                foreach (SourceFile file in Config.Files)
+                {
+                    Console.WriteLine(file.FileName + " | " + file.Type + " | " + file.SourcePath.Replace(SourceFolder, ""));
+
+                    if (file.Type == "post")
+                    {
+                        string destination = file.CreateDirectoryStructure(file.FileName);
+                        file.Render(file.Content, destination + file.FileName + ".html", true);
+                    }
+                    else
+                    {
+                        // TODO make destination folder keep source path in mind
+                        string destination = DestinationFolder;
+                        file.Render(file.Content, destination + file.FileName + ".html", false);
+                    }
+                }
 
                 Console.WriteLine("Process completed, press a key to exit");
             } else
