@@ -49,6 +49,12 @@ namespace Blueprint
             File.WriteAllText(destination, header + content + footer);
         }
 
+        public void CopyFileToDestination(string source, string destination)
+        {
+            string sourceFile = Render.FileToString(source, Program.Config.Variables);
+            File.WriteAllText(destination, sourceFile);
+        }
+
         public string CreateDirectoryStructure(string filename)
         {
             string path = Program.DestinationFolder;

@@ -121,13 +121,12 @@ namespace Blueprint
                 }
 
                 file.ConvertFileToHTML(
-                    path,
-                    destination + file.FileName + ".html"
-                );
+                    path, destination + file.FileName + ".html");
             } 
             else if (file.FileType == ".html")
             {
-                Console.WriteLine("encountered HTML file: " + file.FileName);
+                file.CopyFileToDestination(
+                    path, destination + file.FileName + ".html");
             }
         }
     }
