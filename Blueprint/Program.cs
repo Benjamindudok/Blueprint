@@ -74,10 +74,12 @@ namespace Blueprint
             if (Directory.Exists(SourceFolder))
             {
                 // start analyzing directies/files
-                SourceBrowser.AnalyzeDirectory(SourceFolder);
+                SourceBrowser analyzer = new AnalyzeBrowser();
+                analyzer.ProcessDirectory(SourceFolder);
 
                 // start processing directies/files
-                SourceBrowser.ProcessDirectory(SourceFolder);
+                SourceBrowser processer = new ProcessBrowser();
+                processer.ProcessDirectory(SourceFolder);
 
                 Console.WriteLine("Process completed, press a key to exit");
             } else
