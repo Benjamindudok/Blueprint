@@ -48,11 +48,9 @@ namespace Blueprint
                 content = header + content + footer;
             }
 
-            foreach (SourceFile partial in Program.Config.Files.Where(f => f.PageType == "partial"))
-            {
-                Console.WriteLine(partial.FileName);
-                content += partial.Content;
-            }
+            content = Program.Config.Files
+                .Where(f => f.PageType == "partial")
+                .Aggregate(content, (current, partial) => current + partial.Content);
 
             // TODO add page variables for current page
             // render html file with replaced variables

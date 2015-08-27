@@ -86,11 +86,17 @@ namespace Blueprint
                 file.PageType = "page";
             }
 
-            if (file.FileType == ".md")
-                file.Content = file.ConvertMarkdown(path);
+            switch (file.FileType)
+            {
+                case ".md":
+                    file.Content = file.ConvertMarkdown(path);
+                    break;
 
-            else if (file.FileType == ".html")
-                file.Content = File.ReadAllText(path);
+                case ".html":
+                    file.Content = File.ReadAllText(path);
+                    break;
+
+            }
 
             // add file to memory
             Program.Config.Files.Add(file);
