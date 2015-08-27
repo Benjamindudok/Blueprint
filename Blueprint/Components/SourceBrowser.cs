@@ -11,7 +11,7 @@ namespace Blueprint
 {
     class SourceBrowser
     {
-        public static string SourceFolders = "_posts";
+        public static string SourceFolders = "_partials|_posts";
 
         public SourceBrowser()
         {
@@ -40,7 +40,7 @@ namespace Blueprint
 
                 // only check right directories
                 Regex regex = new Regex(@"(" + SourceFolders + ")");
-                Match match = regex.Match(subdirectory);
+                Match match = regex.Match(subdirectoryName);
 
                 if (match.Success)
                     ProcessDirectory(subdirectory);
@@ -53,19 +53,29 @@ namespace Blueprint
         {
             SourceFile file = new SourceFile(path);
             
-            Regex regex = new Regex(@"_posts");
+            Regex regex = new Regex(@"_posts|_partials");
             Match postsMatch = regex.Match(file.SourcePath);
 
             // Check if file is a page or post
             if (postsMatch.Success)
             {
-                // store post in variable
-                Post post = new Post(path);
-                Program.Config.Variables.Site.Posts.Add(post);
+                string match = postsMatch.Captures.Cast<Match>().First().ToString();
 
-                file.Type = "post";
-                // create directory structure
-                //file.CreateDirectoryStructure(file.FileName);
+                switch (match)
+                {
+                    case "_partials":
+                        file.PageType = "partial";
+                        Console.WriteLine("this is a partial");
+                        break;
+
+                    case "_posts":
+                        // store post in variable
+                        Post post = new Post(path);
+                        Program.Config.Variables.Site.Posts.Add(post);
+
+                        file.PageType = "post";
+                        break;
+                }
             } 
             else
             {
@@ -73,7 +83,7 @@ namespace Blueprint
                 Page page = new Page(path);
                 Program.Config.Variables.Site.Pages.Add(page);
 
-                file.Type = "page";
+                file.PageType = "page";
             }
 
             if (file.FileType == ".md")

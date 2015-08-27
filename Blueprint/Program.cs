@@ -80,19 +80,20 @@ namespace Blueprint
 
                 foreach (SourceFile file in Config.Files)
                 {
-                    
-                    if (file.Type == "post")
-                    {
-                        string destination = file.GetDirectoryStructureForPosts(file.FileName);
-                        file.Render(file.Content, destination + file.FileName + ".html", true);
-                    }
-                    else
-                    {
-                        // TODO make destination folder keep source path in mind
-                        string destination = file.DestinationPath;
-                        file.Render(file.Content, destination + file.FileName + ".html", false);
-                    }
+                    string destination;
 
+                    switch(file.PageType)
+                    {
+                        case "page":
+                            destination = file.DestinationPath;
+                            file.Render(file.Content, destination + file.FileName + ".html", false);
+                            break;
+
+                        case "post":
+                            destination = file.GetDirectoryStructureForPosts(file.FileName);
+                            file.Render(file.Content, destination + file.FileName + ".html", true);
+                            break;
+                    }
                 }
 
                 Console.WriteLine("Process completed, press a key to exit");

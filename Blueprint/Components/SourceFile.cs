@@ -16,7 +16,7 @@ namespace Blueprint
         public string SourcePath { get; set; }
         public string DestinationPath { get; set; }
         public string Content { get; set; }
-        public string Type { get; set; }
+        public string PageType { get; set; }
 
         public SourceFile(string path)
         {
@@ -48,8 +48,13 @@ namespace Blueprint
                 content = header + content + footer;
             }
 
-            // TODO add Nustache Partials to content
+            foreach (SourceFile partial in Program.Config.Files.Where(f => f.PageType == "partial"))
+            {
+                Console.WriteLine(partial.FileName);
+                content += partial.Content;
+            }
 
+            // TODO add page variables for current page
             // render html file with replaced variables
             Nustache.Core.Render.StringToFile(content, Program.Config.Variables, destination);
         }
