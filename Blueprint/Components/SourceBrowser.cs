@@ -11,7 +11,7 @@ namespace Blueprint
 {
     class SourceBrowser
     {
-        public static string SourceFolders = "_partials|_posts";
+        public string SourceFolders = "_partials|_posts";
 
         public SourceBrowser()
         {
@@ -65,7 +65,6 @@ namespace Blueprint
                 {
                     case "_partials":
                         file.PageType = "partial";
-                        Console.WriteLine("this is a partial");
                         break;
 
                     case "_posts":
@@ -95,7 +94,6 @@ namespace Blueprint
                 case ".html":
                     file.Content = File.ReadAllText(path);
                     break;
-
             }
 
             // add file to memory

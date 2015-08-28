@@ -90,7 +90,7 @@ namespace Blueprint
                             break;
 
                         case "post":
-                            destination = file.GetDirectoryStructureForPosts(file.FileName);
+                            destination = file.GenerateDirectoryStructureForPosts(file.FileName);
                             file.Render(file.Content, destination + file.FileName + ".html", true);
                             break;
                     }

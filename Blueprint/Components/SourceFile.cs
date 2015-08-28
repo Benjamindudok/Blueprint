@@ -15,6 +15,7 @@ namespace Blueprint
         public string FileType { get; set; }
         public string SourcePath { get; set; }
         public string DestinationPath { get; set; }
+
         public string Content { get; set; }
         public string PageType { get; set; }
 
@@ -30,11 +31,24 @@ namespace Blueprint
 
         public string ConvertMarkdown(string source)
         {
-            // read file
+            // read file and convert markdown to html string
             string file = File.ReadAllText(source);
-
-            // convert markdown to html string
             return CommonMark.CommonMarkConverter.Convert(file);
+        }
+
+        public void GenerateHtmlFile(bool renderLayout, string layoutName)
+        {
+            if (renderLayout)
+            {
+                
+            }
+
+            // add partials to content
+            Content = Program.Config.Files
+                .Where(f => f.PageType == "partial")
+                .Aggregate(Content, (current, partial) => current + partial.Content);
+
+            Nustache.Core.Render.StringToFile(Content, Program.Config.Variables, DestinationPath);
         }
 
         public void Render(string content, string destination, bool renderLayout)
@@ -42,7 +56,7 @@ namespace Blueprint
             // add header / footer to content
             // TODO make layout files variable by config
             if (renderLayout) {
-                string header   = File.ReadAllText(Program.SourceFolder + "\\_layout\\header.html");
+                string header = File.ReadAllText(Program.SourceFolder + "\\_layout\\header.html");
                 string footer = File.ReadAllText(Program.SourceFolder + "\\_layout\\footer.html");
 
                 content = header + content + footer;
@@ -57,11 +71,11 @@ namespace Blueprint
             Nustache.Core.Render.StringToFile(content, Program.Config.Variables, destination);
         }
 
-        public string GetDirectoryStructureForPosts(string filename)
+        public string GenerateDirectoryStructureForPosts(string filename)
         {
             string path = Program.DestinationFolder;
 
-            // by creation date
+            // by creation date 
             string[] date = filename.Split('-');
             path += date[0] + "\\" + date[1] + "\\" + date[2] + "\\";
 
@@ -73,6 +87,11 @@ namespace Blueprint
 
             // return path for reference
             return path;
+        }
+
+        public string GenerateFileNameForPosts(string filename)
+        {
+            return "";
         }
     }
 }
