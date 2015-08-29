@@ -45,7 +45,7 @@ namespace Blueprint.Components
             }
 
             // set page variables
-            Program.Config.Variables.Page = new Page(SourcePath);
+            Program.Config.Variables.Page = (PageType == "post") ? new Post(SourcePath) : new Page(SourcePath);
             Program.Config.Variables.Page.Content = Render.StringToString(Content, Program.Config.Variables);
 
             // add partials to content
