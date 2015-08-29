@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blueprint.Components;
 using Blueprint.Models;
 using Newtonsoft.Json;
 
@@ -20,7 +21,7 @@ namespace Blueprint
         {
             // use relative path in release builds if no arguments given.
             #if (DEBUG)
-                const string relativePath = "O:\\_temp\\blueprint-test";
+                const string relativePath = "C:\\Projects\\www\\blueprint-test";
             #else
                 string relativePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 relativePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -80,18 +81,15 @@ namespace Blueprint
 
                 foreach (SourceFile file in Config.Files)
                 {
-                    string destination;
-
                     switch(file.PageType)
                     {
                         case "page":
-                            destination = file.DestinationPath;
-                            file.Render(file.Content, destination + file.FileName + ".html", false);
+                            file.GenerateHtmlFile(true, "Default");
                             break;
 
                         case "post":
-                            destination = file.GenerateDirectoryStructureForPosts(file.FileName);
-                            file.Render(file.Content, destination + file.FileName + ".html", true);
+                            file.DestinationPath = file.GenerateDirectoryStructureForPosts(file.FileName);
+                            file.GenerateHtmlFile(true, "Default");
                             break;
                     }
                 }

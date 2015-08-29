@@ -7,11 +7,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Blueprint.Models;
 
-namespace Blueprint
+namespace Blueprint.Components
 {
     class SourceBrowser
     {
-        public string SourceFolders = "_partials|_posts";
+        public string SourceFolders = "_partials|_posts|_layout";
 
         public SourceBrowser()
         {
@@ -53,7 +53,7 @@ namespace Blueprint
         {
             SourceFile file = new SourceFile(path);
             
-            Regex regex = new Regex(@"_posts|_partials");
+            Regex regex = new Regex(SourceFolders);
             Match postsMatch = regex.Match(file.SourcePath);
 
             // Check if file is a page or post
@@ -74,6 +74,9 @@ namespace Blueprint
 
                         file.PageType = "post";
                         break;
+                    case "_layout":
+                        file.PageType = "layout";
+                        break;
                 }
             } 
             else
@@ -83,17 +86,6 @@ namespace Blueprint
                 Program.Config.Variables.Site.Pages.Add(page);
 
                 file.PageType = "page";
-            }
-
-            switch (file.FileType)
-            {
-                case ".md":
-                    file.Content = file.ConvertMarkdown(path);
-                    break;
-
-                case ".html":
-                    file.Content = File.ReadAllText(path);
-                    break;
             }
 
             // add file to memory

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Blueprint.Models;
 using Nustache.Core;
 
-namespace Blueprint
+namespace Blueprint.Components
 {
     public class SourceFile
     {
@@ -26,49 +26,35 @@ namespace Blueprint
             FileName = file[file.Length - 1].Split('.')[0];
             FileType = "." + file[file.Length - 1].Split('.')[1];
             SourcePath = path;
-            DestinationPath = Program.DestinationFolder + path.Replace(Program.SourceFolder, "").Replace(FileName + FileType, "");
-        }
+            DestinationPath = Program.DestinationFolder + path.Replace(Program.SourceFolder + "\\", "").Replace(FileName + FileType, "");
 
-        public string ConvertMarkdown(string source)
-        {
-            // read file and convert markdown to html string
-            string file = File.ReadAllText(source);
-            return CommonMark.CommonMarkConverter.Convert(file);
+            // get content and convert markdown if needed
+            Content = File.ReadAllText(path);
+            if (FileType == ".md") Content = CommonMark.CommonMarkConverter.Convert(Content);
         }
 
         public void GenerateHtmlFile(bool renderLayout, string layoutName)
         {
-            if (renderLayout)
-            {
-                
+            // locally hold file contents
+            string content = Content;
+
+            // if layout is needed, replace file contents with layout file content
+            if (renderLayout) { 
+                SourceFile layoutFile = Program.Config.Files.Where(f => f.PageType == "layout").First(l => l.FileName == layoutName);
+                content = layoutFile.Content;
             }
+
+            // set page variables
+            Program.Config.Variables.Page = new Page(SourcePath);
+            Program.Config.Variables.Page.Content = Render.StringToString(Content, Program.Config.Variables);
 
             // add partials to content
-            Content = Program.Config.Files
-                .Where(f => f.PageType == "partial")
-                .Aggregate(Content, (current, partial) => current + partial.Content);
-
-            Nustache.Core.Render.StringToFile(Content, Program.Config.Variables, DestinationPath);
-        }
-
-        public void Render(string content, string destination, bool renderLayout)
-        {
-            // add header / footer to content
-            // TODO make layout files variable by config
-            if (renderLayout) {
-                string header = File.ReadAllText(Program.SourceFolder + "\\_layout\\header.html");
-                string footer = File.ReadAllText(Program.SourceFolder + "\\_layout\\footer.html");
-
-                content = header + content + footer;
-            }
-
             content = Program.Config.Files
                 .Where(f => f.PageType == "partial")
                 .Aggregate(content, (current, partial) => current + partial.Content);
 
-            // TODO add page variables for current page
-            // render html file with replaced variables
-            Nustache.Core.Render.StringToFile(content, Program.Config.Variables, destination);
+            // render file with Nustache replacements
+            Render.StringToFile(content, Program.Config.Variables, DestinationPath + FileName + ".html");
         }
 
         public string GenerateDirectoryStructureForPosts(string filename)
@@ -89,9 +75,9 @@ namespace Blueprint
             return path;
         }
 
-        public string GenerateFileNameForPosts(string filename)
-        {
-            return "";
-        }
+        //public string GenerateFileNameForPosts(string filename)
+        //{
+        //    return "";
+        //}
     }
 }
