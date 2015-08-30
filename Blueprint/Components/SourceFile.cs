@@ -18,6 +18,12 @@ namespace Blueprint.Components
 
         public string Content { get; set; }
         public string PageType { get; set; }
+        public string Layout { get; set; }
+
+        public SourceFile()
+        {
+            
+        }
 
         public SourceFile(string path)
         {

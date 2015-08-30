@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Blueprint.Models;
 using Blueprint.Components;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Blueprint
 {
@@ -17,6 +18,7 @@ namespace Blueprint
         public string[] Exclude { get; set; }
 
         public List<SourceFile> Files { get; set; }
+        public Defaults Defaults { get; set; }
 
         public Variables Variables { get; set; }
 
@@ -25,5 +27,11 @@ namespace Blueprint
             Files = new List<SourceFile>();
             Variables = new Variables();
         }
+    }
+
+    public class Defaults
+    {
+        public SourceFile Page { get; set; }
+        public SourceFile Post { get; set; }
     }
 }

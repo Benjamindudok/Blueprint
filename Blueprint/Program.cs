@@ -81,15 +81,19 @@ namespace Blueprint
 
                 foreach (SourceFile file in Config.Files)
                 {
+                    string layout = (file.PageType == "post")
+                        ? Config.Defaults.Post.Layout
+                        : Config.Defaults.Page.Layout;
+
                     switch(file.PageType)
                     {
                         case "page":
-                            file.GenerateHtmlFile(true, "Default");
+                            file.GenerateHtmlFile(true, layout);
                             break;
 
                         case "post":
                             file.DestinationPath = file.GenerateDirectoryStructureForPosts(file.FileName);
-                            file.GenerateHtmlFile(true, "Default");
+                            file.GenerateHtmlFile(true, layout);
                             break;
                     }
                 }
